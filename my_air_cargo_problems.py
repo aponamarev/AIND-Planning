@@ -66,6 +66,11 @@ class AirCargoProblem(Problem):
                 for p in self.planes:
                     for a in self.airports:
 
+                        """
+                        To avoid generating plans with illegal actions, we must add precondition
+                        axioms stating that an action occurrence requires the preconditions to be
+                        satisfied.6 For example, we need Fly(P1,JFK,SFO)0 ⇒ At(P1,JFK)0.
+                        """
                         precond_pos = [expr("At({}, {})".format(c, a)),
                                        expr("At({}, {})".format(p, a))]
                         precond_neg = []
@@ -221,8 +226,19 @@ class AirCargoProblem(Problem):
         conditions by ignoring the preconditions required for an action to be
         executed.
         """
-        # TODO implement (see Russell-Norvig Ed-3 10.2.3  or Russell-Norvig Ed-2 11.2)
+        # As per see Russell-Norvig Ed-3 10.2.3  or Russell-Norvig Ed-2 11.2
+        """
+        Since this heuristic ignores preconditions, the minimal number of steps
+        will be defined by the number of not satisfied yet goal conditions in the
+        current state. 
+        """
+        kb = PropKB()
+        kb.tell(decode_state(node.state, self.state_map).pos_sentence())
         count = 0
+        for clause in self.goal:
+            if clause not in kb.clauses:
+                count += 1
+
         return count
 
 

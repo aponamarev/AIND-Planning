@@ -181,6 +181,10 @@ def depth_first_graph_search(problem):
 def breadth_first_search(problem):
     "[Figure 3.11]"
     node = Node(problem.initial)
+    """ 
+    Since we do not know a priori how many steps it takes to achieve the goal, 
+    we can try asserting that the goal is true in the initial state, time T =0.
+    """
     if problem.goal_test(node.state):
         return node
     frontier = FIFOQueue()
